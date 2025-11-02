@@ -1,0 +1,24 @@
+from flask import Flask, request
+import telebot
+
+app = Flask(__name__)
+TOKEN = '8415319018:AAHQXA-JbpOvYIvymzPmMQKZ1wjdtCiesl4'
+bot = telebot.TeleBot(TOKEN)
+
+@app.route('/' + TOKEN, methods=['POST'])
+def handle_message():
+    update = telebot.types.Update.de_json(request.stream.read().decode('utf-8'))
+    bot.process_new_updates([update])
+    return 'ok', 200
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    bot.reply_to(message, f"Здравствуй, это бот Winter aquatic flood, напиши команду /letsgo, и тебе выдастся шаблон анкеты")
+
+@bot.message_handler(commands=['letsgo'])
+def send_text_and_image(message):
+    text = "🗯 ゛ ♡゙ 🥛   анкета!! прошу заполнить все пункты!!\\n𖥔 персонаж\\n𖥔 ваш возраст \\n𖥔 дата рождения \\n𖥔 фото персонажа \\n𖥔 юзернейм \\n𖥔 кодовое слово."
+    bot.send_message(message.chat.id, text)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
